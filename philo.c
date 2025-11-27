@@ -12,17 +12,36 @@
 
 #include "philosopher.h"
 
-void	sleep(t_philo *philo)
+/*void	sleep(t_philo *philo)
 {
 }
 
 void	eat(t_philo *philo, pthread_mutex_t *forks)
 {
 
+}*/
+
+void	*start(void *philo)
+{
+	t_philo *p;
+
+	p = (t_philo *)philo;
+	print_philo(p);
+	if (philo->id % 2 == 0)
+	else
+	return (philo);
 }
 
-void	start(t_stats *stats)
+void	init(t_stats *stats)
 {
+	int	i;
+
+	i = -1;
+	while (++i < stats->n_philo)
+	{
+		pthread_create(&stats->philos[i].philo, NULL, start, &stats->philos[i]);
+		usleep (1000);
+	}
 }
 
 bool	check_args(int ac, char **av)
@@ -48,6 +67,7 @@ int	main(int ac, char **av)
 	if (!check_args(ac, av))
 		return (1);
 	get_stats(&stats, av);
-	start(&stats);
+	init(&stats);
+	free_stats(&stats);
 	return (0);
 }

@@ -16,14 +16,18 @@
 # include <stdio.h>
 # include <stdbool.h>
 # include <stdlib.h>
+# include <unistd.h>
+# define LEFT 0
+# define RIGHT 1
 
 typedef struct s_philo
 {
-	int			id;
-	int			ms_death;
-	int			ms_eat;
-	int			ms_sleep;
-	pthread_t	philo;
+	int				id;
+	int				ms_death;
+	int				ms_eat;
+	int				ms_sleep;
+	pthread_t		philo;
+	pthread_mutex_t	forks[2];
 }	t_philo;
 
 typedef struct s_stats
@@ -38,6 +42,8 @@ typedef struct s_stats
 
 //philosopher
 bool	check_args(int ac, char **av);
+void	init(t_stats *stats);
+void	*start(void *philo);
 
 //stats
 void	free_stats(t_stats *stats);
