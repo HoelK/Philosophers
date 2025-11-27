@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 01:51:56 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/26 02:00:10 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/11/27 22:34:31 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,20 @@ void	free_stats(t_stats *stats)
 {
 	int	i;
 
-	i = -1;
 	if (stats->philos)
 	{
+		i = -1;
 		while (++i < stats->n_philo)
 			pthread_detach(stats->philos[i].philo);
 		free(stats->philos);
 	}
 	if (stats->forks)
+	{
+		i = -1;
+		while (++i < stats->n_philo)
+			pthread_mutex_destroy(stats->forks[i]);
 		free(stats->forks);
+	}
 }
 
 int	get_stats(t_stats *stats, char **av)
@@ -32,6 +37,7 @@ int	get_stats(t_stats *stats, char **av)
 	int	i;
 
 	i = -1;
+	stats->death = false;
 	stats->n_philo = ft_atoi(av[1]);
 	stats->t_to_die = ft_atoi(av[2]);
 	stats->t_to_eat = ft_atoi(av[3]);
@@ -43,6 +49,7 @@ int	get_stats(t_stats *stats, char **av)
 	while (++i < stats->n_philo)
 	{
 		stats->philos[i].id = i;
+		stats->philos[i].stats = stats;
 		stats->philos[i].ms_eat = stats->t_to_eat;
 		stats->philos[i].ms_sleep = stats->t_to_sleep;
 		stats->philos[i].ms_death = stats->t_to_die;
@@ -54,6 +61,7 @@ int	get_stats(t_stats *stats, char **av)
 			stats->philos[i].forks[RIGHT] = stats->forks[0];
 		else
 			stats->philos[i].forks[RIGHT] = stats->forks[i];
+		stats->forks[i] = pthread_mutex_init(stats->forks[i], NULL);
 	}
 	return (1);
 }

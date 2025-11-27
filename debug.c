@@ -6,11 +6,16 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 01:52:03 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/26 01:52:04 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/11/27 22:30:57 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
+
+void	print_status(t_philo *philo, const char *status)
+{
+	printf("%d %d %s", get_time(), philo->id, status);
+}
 
 void	print_philo(t_philo *philo)
 {

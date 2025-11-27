@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 01:52:09 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/26 01:52:09 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/11/27 22:32:53 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,9 @@ int	ft_atoi(char *s)
 	if (minus)
 		return (-res);
 	return (res);
+}
+
+int	get_time(int start)
+{
+	return (gettimeofday() - start);
 }
