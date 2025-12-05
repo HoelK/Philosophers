@@ -14,7 +14,7 @@
 
 void	print_status(t_philo *philo, const char *status)
 {
-	fprintf(stderr, "%d %d %s\n", get_time(0), philo->id, status);
+	fprintf(stderr, "%d %d %s\n", get_time(philo->stats->start_time), philo->id, status);
 }
 
 void	print_philo(t_philo *philo)

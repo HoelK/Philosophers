@@ -17,30 +17,25 @@ void	sleep_ms(int sleep_time)
 	usleep(sleep_time * 1000);
 }
 
-int	hunger(t_philo *philo, pthread_mutex_t *forks)
+int	hunger(t_philo *philo, pthread_mutex_t **forks)
 {
-	while (pthread_mutex_lock(&forks[LEFT]) == EBUSY || pthread_mutex_lock(&forks[RIGHT]) == EBUSY)
-	{
-		sleep_ms(1);
-		philo->ms_death--;
-		if (!philo->ms_death)
-		{
-			philo->stats->death = true;
-			return (0);
-		}
-	}
-	philo->ms_death = philo->stats->t_to_die;
+	pthread_mutex_lock(forks[LEFT]);
+	print_status(philo, "is picking left fork");
+	pthread_mutex_lock(forks[RIGHT]);
+	print_status(philo, "is picking right fork");
+	if (!philo->ms_death)
+		return (philo->stats->death = true, 0);
 	return (1);
 }
 
-void	eat(t_philo *philo, int time_to_eat, pthread_mutex_t *forks)
+void	eat(t_philo *philo, int time_to_eat, pthread_mutex_t **forks)
 {
 	if (!hunger(philo, forks))
 		return ;
 	sleep_ms(time_to_eat);
 	print_status(philo, "is eating");
-	pthread_mutex_unlock(&forks[LEFT]);
-	pthread_mutex_unlock(&forks[RIGHT]);
+	pthread_mutex_unlock(forks[LEFT]);
+	pthread_mutex_unlock(forks[RIGHT]);
 }
 
 void	*start(void *philo)
@@ -54,7 +49,10 @@ void	*start(void *philo)
 	{
 		eat(p, p->ms_eat, p->forks);
 		if (!p->stats->death)
+		{
+			print_status(p, "is sleeping");
 			sleep_ms(p->ms_sleep);
+		}
 	}
 	return (philo);
 }
@@ -64,6 +62,7 @@ void	init(t_stats *stats)
 	int	i;
 
 	i = -1;
+	stats->start_time = get_time(0);
 	while (++i < stats->n_philo)
 		pthread_create(&stats->philos[i].philo, NULL, start, &stats->philos[i]);
 	while (!stats->death);

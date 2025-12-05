@@ -31,7 +31,7 @@ typedef struct s_philo
 	int				ms_death;
 	int				ms_sleep;
 	pthread_t		philo;
-	pthread_mutex_t	forks[2];
+	pthread_mutex_t	*forks[2];
 	t_stats			*stats;
 }	t_philo;
 
@@ -44,6 +44,8 @@ typedef struct s_stats
 	bool			death;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	hunger_m;
+	unsigned int	start_time;
 }	t_stats;
 
 //philosopher

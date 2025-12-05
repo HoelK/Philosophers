@@ -53,15 +53,15 @@ int	get_stats(t_stats *stats, char **av)
 		stats->philos[i].ms_eat = stats->t_to_eat;
 		stats->philos[i].ms_sleep = stats->t_to_sleep;
 		stats->philos[i].ms_death = stats->t_to_die;
-		if (i == 0)
-			stats->philos[i].forks[LEFT] = stats->forks[stats->n_philo - 1];
-		else
-			stats->philos[i].forks[LEFT] = stats->forks[i - 1];
-		if (i == (stats->n_philo - 1))
-			stats->philos[i].forks[RIGHT] = stats->forks[0];
-		else
-			stats->philos[i].forks[RIGHT] = stats->forks[i];
 		pthread_mutex_init(&stats->forks[i], NULL);
+		if (i == 0)
+			stats->philos[i].forks[LEFT] = &stats->forks[stats->n_philo - 1];
+		else
+			stats->philos[i].forks[LEFT] = &stats->forks[i - 1];
+		if (i == (stats->n_philo - 1))
+			stats->philos[i].forks[RIGHT] = &stats->forks[0];
+		else
+			stats->philos[i].forks[RIGHT] = &stats->forks[i];
 	}
 	return (1);
 }

@@ -2,7 +2,7 @@ CC=cc
 FLAGS=-Wall -Wextra -Werror -g -pthread
 SRCS=philo.c stats.c utils.c debug.c
 OBJS=$(SRCS:.c=.o)
-NAME=test
+NAME=philo
 
 all: $(NAME)
 
