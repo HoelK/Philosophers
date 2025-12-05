@@ -17,8 +17,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <errno.h>
+# include <sys/time.h>
 # define LEFT 0
 # define RIGHT 1
+
+typedef struct s_stats t_stats;
 
 typedef struct s_philo
 {

@@ -12,20 +12,20 @@
 
 #include "philosopher.h"
 
-void	sleep(int sleep_time)
+void	sleep_ms(int sleep_time)
 {
 	usleep(sleep_time * 1000);
 }
 
-int	hunger(t_philo *philo, int time_to_eat, pthread_mutex_t *forks)
+int	hunger(t_philo *philo, pthread_mutex_t *forks)
 {
-	while (pthread_mutex_lock(forks[LEFT]) == EDEADLK || pthread_mutex_lock(forks[RIGHT]) == EDEADLK)
+	while (pthread_mutex_lock(&forks[LEFT]) == EBUSY || pthread_mutex_lock(&forks[RIGHT]) == EBUSY)
 	{
-		usleep(1000);
+		sleep_ms(1);
 		philo->ms_death--;
 		if (!philo->ms_death)
 		{
-			philo->stats->death = 1;
+			philo->stats->death = true;
 			return (0);
 		}
 	}
@@ -35,17 +35,12 @@ int	hunger(t_philo *philo, int time_to_eat, pthread_mutex_t *forks)
 
 void	eat(t_philo *philo, int time_to_eat, pthread_mutex_t *forks)
 {
-	if (!hunger(philo, time_to_eat, forks))
+	if (!hunger(philo, forks))
 		return ;
-	print_status("is eating");
-	usleep(time_to_eat * 1000);
-	pthread_mutex_unlock(forks[LEFT]);
-	pthread_mutex_unlock(forks[RIGHT]);
-}
-
-bool	end(t_stats *stats)
-{
-	return (stats->death);
+	sleep_ms(time_to_eat);
+	print_status(philo, "is eating");
+	pthread_mutex_unlock(&forks[LEFT]);
+	pthread_mutex_unlock(&forks[RIGHT]);
 }
 
 void	*start(void *philo)
@@ -54,11 +49,12 @@ void	*start(void *philo)
 
 	p = (t_philo *)philo;
 	if (p->id % 2 == 1)
-		wait(1000);
-	while (!end(p->stats))
+		sleep_ms(1);
+	while (!p->stats->death)
 	{
 		eat(p, p->ms_eat, p->forks);
-		sleep(p->ms_sleep);
+		if (!p->stats->death)
+			sleep_ms(p->ms_sleep);
 	}
 	return (philo);
 }
@@ -70,6 +66,7 @@ void	init(t_stats *stats)
 	i = -1;
 	while (++i < stats->n_philo)
 		pthread_create(&stats->philos[i].philo, NULL, start, &stats->philos[i]);
+	while (!stats->death);
 }
 
 bool	check_args(int ac, char **av)

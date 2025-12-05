@@ -27,7 +27,7 @@ void	free_stats(t_stats *stats)
 	{
 		i = -1;
 		while (++i < stats->n_philo)
-			pthread_mutex_destroy(stats->forks[i]);
+			pthread_mutex_destroy(&stats->forks[i]);
 		free(stats->forks);
 	}
 }
@@ -61,7 +61,7 @@ int	get_stats(t_stats *stats, char **av)
 			stats->philos[i].forks[RIGHT] = stats->forks[0];
 		else
 			stats->philos[i].forks[RIGHT] = stats->forks[i];
-		stats->forks[i] = pthread_mutex_init(stats->forks[i], NULL);
+		pthread_mutex_init(&stats->forks[i], NULL);
 	}
 	return (1);
 }

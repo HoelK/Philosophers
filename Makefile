@@ -1,9 +1,8 @@
 CC=cc
-#FLAGS=-Wall -Werror -Wextra -lpthread -g
-FLAGS=-Wall -Werror -Wextra -g
+FLAGS=-Wall -Wextra -Werror -g -pthread
 SRCS=philo.c stats.c utils.c debug.c
 OBJS=$(SRCS:.c=.o)
-NAME=philo
+NAME=test
 
 all: $(NAME)
 
@@ -16,7 +15,7 @@ $(NAME): $(OBJS)
 clean:
 	rm -f $(OBJS)
 
-fclean: clean
+fclean:	clean
 	rm -f $(NAME)
 
 re: fclean all

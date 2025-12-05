@@ -67,5 +67,8 @@ int	ft_atoi(char *s)
 
 int	get_time(int start)
 {
-	return (gettimeofday() - start);
+	struct timeval	now;
+
+	gettimeofday(&now, NULL);
+	return (now.tv_usec - start);
 }
