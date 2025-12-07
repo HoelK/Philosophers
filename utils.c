@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 01:52:09 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/27 22:32:53 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/07 03:38:59 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,6 @@ bool	ft_isnumber(char *s)
 {
 	if (!s || !*s)
 		return (false);
-	if (*s == '-' || *s == '+')
-	{
-		if (*(s + 1) == 0)
-			return (false);
-		s++;
-	}
 	while (*s)
 	{
 		if (!ft_isdigit(*s))
@@ -65,10 +59,10 @@ int	ft_atoi(char *s)
 	return (res);
 }
 
-int	get_time(int start)
+unsigned long	get_time(struct timeval start)
 {
-	struct timeval	now;
+	struct timeval	end;
 
-	gettimeofday(&now, NULL);
-	return (now.tv_usec - start);
+	gettimeofday(&end, NULL);
+	return (((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000));
 }

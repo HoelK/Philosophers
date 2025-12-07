@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 01:51:56 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/27 22:34:31 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/07 03:33:37 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,29 +39,32 @@ int	get_stats(t_stats *stats, char **av)
 	i = -1;
 	stats->death = false;
 	stats->n_philo = ft_atoi(av[1]);
-	stats->t_to_die = ft_atoi(av[2]);
-	stats->t_to_eat = ft_atoi(av[3]);
-	stats->t_to_sleep = ft_atoi(av[4]);
+	stats->ms_death = ft_atoi(av[2]);
+	stats->ms_eat = ft_atoi(av[3]);
+	stats->ms_sleep = ft_atoi(av[4]);
+	stats->max_meal = -1;
+	if (av[5])
+		stats->max_meal = ft_atoi(av[5]);
 	stats->philos = malloc(sizeof(t_philo) * stats->n_philo);
 	stats->forks = malloc(sizeof(pthread_mutex_t) * stats->n_philo);
 	if (stats->philos == NULL || stats->forks == NULL)
 		return (free_stats(stats), 0);
+	pthread_mutex_init(&stats->hunger_m, NULL);
+	pthread_mutex_init(&stats->death_m, NULL);
 	while (++i < stats->n_philo)
 	{
 		stats->philos[i].id = i;
+		stats->philos[i].n_meal = 0;
 		stats->philos[i].stats = stats;
-		stats->philos[i].ms_eat = stats->t_to_eat;
-		stats->philos[i].ms_sleep = stats->t_to_sleep;
-		stats->philos[i].ms_death = stats->t_to_die;
 		pthread_mutex_init(&stats->forks[i], NULL);
-		if (i == 0)
-			stats->philos[i].forks[LEFT] = &stats->forks[stats->n_philo - 1];
-		else
-			stats->philos[i].forks[LEFT] = &stats->forks[i - 1];
+		stats->philos[i].forks[LEFT] = &stats->forks[i];
 		if (i == (stats->n_philo - 1))
-			stats->philos[i].forks[RIGHT] = &stats->forks[0];
-		else
+		{
+			stats->philos[i].forks[LEFT] = &stats->forks[0];
 			stats->philos[i].forks[RIGHT] = &stats->forks[i];
+		}
+		else
+			stats->philos[i].forks[RIGHT] = &stats->forks[i + 1];
 	}
 	return (1);
 }

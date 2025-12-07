@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/21 04:34:36 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/11/27 22:33:25 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/06 23:57:43 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,23 @@
 # include <stdio.h>
 # include <errno.h>
 # include <sys/time.h>
-# define LEFT 0
-# define RIGHT 1
+# include <limits.h>
+# ifndef LEFT
+#  define LEFT 0
+# endif
+# ifndef RIGHT
+#  define RIGHT 1
+# endif
+# ifndef ADD
+#  define ADD 1
+# endif
 
 typedef struct s_stats t_stats;
 
 typedef struct s_philo
 {
 	int				id;
-	int				ms_eat;
-	int				ms_death;
-	int				ms_sleep;
+	int				n_meal;			
 	pthread_t		philo;
 	pthread_mutex_t	*forks[2];
 	t_stats			*stats;
@@ -38,14 +44,16 @@ typedef struct s_philo
 typedef struct s_stats
 {
 	int				n_philo;
-	int				t_to_die;
-	int				t_to_eat;
-	int				t_to_sleep;
+	unsigned long	ms_death;
+	unsigned long	ms_eat;
+	unsigned long	ms_sleep;
+	int				max_meal;
 	bool			death;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
+	struct timeval	start_time;
 	pthread_mutex_t	hunger_m;
-	unsigned int	start_time;
+	pthread_mutex_t	death_m;
 }	t_stats;
 
 //philosopher
@@ -65,7 +73,7 @@ void	print_status(t_philo *philo, const char *status);
 //utils
 int		ft_atoi(char *s);
 int		ft_isdigit(char c);
-int		get_time(int start);
+unsigned long	get_time(struct timeval start);
 bool	ft_isnumber(char *s);
 
 #endif
