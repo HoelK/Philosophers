@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 04:33:14 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/09 04:37:26 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:24:26 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,30 +48,33 @@ int	ft_atoi(const char *nptr)
 	return (result);
 }
 
-uint32_t	timestamp(struct timeval start, uint8_t mode)
+uint32_t	timestamp(void)
 {
-	struct timeval	now;
-	long			usec;
+	struct timeval	tv;
 
-	usec = 0;
-	if (gettimeofday(&now, NULL) == -1)
-		return (0);
-	usec = (now.tv_usec - start.tv_sec);
-	if (usec < 0)
-	{
-		now.tv_usec += 1000000;
-		now.tv_sec -= 1;
-	}
-	if (mode == MICROSECOND)
-		return (((now.tv_sec - start.tv_sec) * 1000000) + ((now.tv_usec - start.tv_usec)));
-	if (mode == MILLISECOND)
-		return (((now.tv_sec - start.tv_sec) * 1000) + ((now.tv_usec - start.tv_usec) / 1000));
-	if (mode == SECOND)
-		return (now.tv_sec - start.tv_sec);
-	return (0);
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
 }
 
-void ft_sleep(struct timeval start, uint32_t start_timestamp, uint32_t u_time) //15 microsec delay
+void	ft_sleep(uint32_t u_time)
 {
-	while ((timestamp(start, MICROSECOND) - start_timestamp) < u_time);
+	uint32_t	start;
+
+	start = timestamp();
+	while (timestamp() - start < u_time)
+		usleep(50);
+}
+
+bool	access_death(pthread_mutex_t *lock, bool *death, uint8_t mode)
+{
+	bool	ret;
+
+	pthread_mutex_lock(lock);
+	if (mode == SET)
+		*death = true;
+	ret = false;
+	if (*death == true)
+		ret = true;
+	pthread_mutex_unlock(lock);
+	return (ret);
 }

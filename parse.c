@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 21:22:42 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/08 21:32:50 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:12:22 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static long	ft_atol(const char *nptr)
 {
 	size_t	i;
 	int		minus;
-	long		result;
+	long	result;
 
 	i = 0;
 	minus = 0;
@@ -83,7 +83,8 @@ bool	check_args(char **av)
 	i = 0;
 	while (av[++i])
 	{
-		if ((!ft_isnum(av[i])) || ft_strlen(av[i]) > 10 || (ft_atol(av[i]) < 0 || ft_atol(av[i]) > INT_MAX))
+		if ((!ft_isnum(av[i])) || ft_strlen(av[i]) > 10
+			|| (ft_atol(av[i]) < 0 || ft_atol(av[i]) > INT_MAX))
 			return (false);
 	}
 	return (true);

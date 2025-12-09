@@ -1,7 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 00:10:53 by hkeromne          #+#    #+#             */
+/*   Updated: 2025/12/10 00:33:26 by hkeromne         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
+void	init_philo_data(t_table *table, t_philo *philos, uint8_t id)
+{
+	philos->id = id;
+	philos->full = false;
+	philos->meal_count = 0;
+	philos->last_meal = table->start_runtime;
+	philos->table = table;
+}
 
-static t_philo	*init_philos(t_table *table, uint8_t n_philos, pthread_mutex_t *forks)
+t_philo	*init_philos(t_table *table, uint8_t n_philos, pthread_mutex_t *forks)
 {
 	uint8_t	i;
 	t_philo	*philos;
@@ -10,12 +30,11 @@ static t_philo	*init_philos(t_table *table, uint8_t n_philos, pthread_mutex_t *f
 	philos = malloc(sizeof(t_philo) * n_philos);
 	if (!philos)
 		return (NULL);
+	table->start_runtime = timestamp();
 	while (i < n_philos)
 	{
-		philos[i].id = i;
-		philos[i].full = false;
-		philos[i].meal_count = 0;
-		philos[i].table = table;
+		init_philo_data(table, &philos[i], i);
+		philos[i].forks[LEFT] = &forks[i];
 		if (i == (n_philos - 1))
 		{
 			philos[i].forks[LEFT] = &forks[0];
@@ -51,15 +70,14 @@ bool	init_table(t_table *table, char **av)
 
 	i = 0;
 	table->death = false;
-	table->ready = false;
 	table->n_philo = ft_atoi(av[++i]);
 	table->ms_death = ft_atoi(av[++i]);
 	table->ms_eat = ft_atoi(av[++i]);
 	table->ms_sleep = ft_atoi(av[++i]);
-	table->max_meal = 0;
-	table->start_time.tv_sec = 0;
-	table->start_time.tv_usec = 0;
+	table->max_meal = -1;
+	pthread_mutex_init(&table->meal_m, NULL);
 	pthread_mutex_init(&table->write_m, NULL);
+	pthread_mutex_init(&table->death_m, NULL);
 	if (av[++i])
 		table->max_meal = ft_atoi(av[i]);
 	table->forks = init_mutexs(table->n_philo);

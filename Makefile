@@ -1,6 +1,6 @@
 CC=cc
-FLAGS=-Wall -Wextra -Werror -g -pthread
-SRCS=main.c routine.c parse.c init.c exit.c debug.c  utils.c
+FLAGS=-Wall -Wextra -Werror -g -pthread -O3
+SRCS=main.c routine.c parse.c init.c exit.c debug.c monitor.c utils.c
 OBJS=$(SRCS:.c=.o)
 NAME=philo
 

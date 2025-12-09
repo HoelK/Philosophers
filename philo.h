@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 00:13:11 by hkeromne          #+#    #+#             */
+/*   Updated: 2025/12/10 00:33:17 by hkeromne         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 # include <stdio.h>
@@ -30,7 +42,7 @@ enum e_status
 	FORK_R
 };
 
-typedef struct s_table t_table;
+typedef struct s_table	t_table;
 
 typedef struct s_philo
 {
@@ -38,25 +50,25 @@ typedef struct s_philo
 	uint32_t		meal_count;
 	uint32_t		last_meal;
 	bool			full;
-	pthread_mutex_t *forks[2];
+	pthread_mutex_t	*forks[2];
 	t_table			*table;
 	pthread_t		thread;
 }	t_philo;
 
 typedef struct s_table
 {
-	bool			ready;
 	bool			death;
 	uint8_t			n_philo;
 	uint32_t		ms_eat;
 	uint32_t		ms_sleep;
 	uint32_t		ms_death;
-	uint32_t		max_meal;
-	struct timeval	start_time;
+	ssize_t			max_meal;
 	uint32_t		start_runtime;
 	t_philo			*philos;
-	pthread_mutex_t write_m;
-	pthread_mutex_t *forks;
+	pthread_mutex_t	meal_m;
+	pthread_mutex_t	write_m;
+	pthread_mutex_t	death_m;
+	pthread_mutex_t	*forks;
 }	t_table;
 
 bool		check_args(char **av);
@@ -68,9 +80,11 @@ void		write_table(t_table *table);
 void		write_philo(t_philo *philo);
 void		write_status(t_philo *philo, uint8_t status);
 void		ft_clean(t_table *table);
-uint32_t	timestamp(struct timeval start, uint8_t mode);
-void ft_sleep(struct timeval start, uint32_t start_timestamp, uint32_t u_time); //15 microsec delay
-void	*lunch(void *p);
-
+uint32_t	timestamp(void);
+void		ft_sleep(uint32_t u_time);
+void		*lunch(void *p);
+void		*solo_lunch(void *p);
+bool		access_death(pthread_mutex_t *lock, bool *death, uint8_t mode);
+void		monitor(t_table *table);
 
 #endif
