@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 21:22:42 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/10 00:12:22 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:42:58 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ bool	check_args(char **av)
 	size_t	i;
 
 	i = 0;
+	if (av[5] && ft_atoi(av[5]) == 0)
+		return (false);
 	while (av[++i])
 	{
 		if ((!ft_isnum(av[i])) || ft_strlen(av[i]) > 10
