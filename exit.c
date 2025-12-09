@@ -12,6 +12,7 @@ void	destroy_mutexs(pthread_mutex_t *mutexs, uint8_t n_philos)
 
 void	ft_clean(t_table *table)
 {
+	pthread_mutex_destroy(&table->write_m);
 	destroy_mutexs(table->forks, table->n_philo);
 	free(table->philos);
 }

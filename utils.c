@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/27 21:05:29 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/09 02:23:08 by hkeromne         ###   ########.fr       */
+/*   Created: 2025/12/09 04:33:14 by hkeromne          #+#    #+#             */
+/*   Updated: 2025/12/09 04:37:26 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,18 @@ int	ft_atoi(const char *nptr)
 
 uint32_t	timestamp(struct timeval start, uint8_t mode)
 {
-	struct timeval now;
+	struct timeval	now;
+	long			usec;
 
-	gettimeofday(&now, NULL);
+	usec = 0;
+	if (gettimeofday(&now, NULL) == -1)
+		return (0);
+	usec = (now.tv_usec - start.tv_sec);
+	if (usec < 0)
+	{
+		now.tv_usec += 1000000;
+		now.tv_sec -= 1;
+	}
 	if (mode == MICROSECOND)
 		return (((now.tv_sec - start.tv_sec) * 1000000) + ((now.tv_usec - start.tv_usec)));
 	if (mode == MILLISECOND)
@@ -66,4 +75,3 @@ void ft_sleep(struct timeval start, uint32_t start_timestamp, uint32_t u_time) /
 {
 	while ((timestamp(start, MICROSECOND) - start_timestamp) < u_time);
 }
-

@@ -50,12 +50,15 @@ bool	init_table(t_table *table, char **av)
 	size_t	i;
 
 	i = 0;
+	table->death = false;
 	table->ready = false;
 	table->n_philo = ft_atoi(av[++i]);
 	table->ms_death = ft_atoi(av[++i]);
 	table->ms_eat = ft_atoi(av[++i]);
 	table->ms_sleep = ft_atoi(av[++i]);
 	table->max_meal = 0;
+	table->start_time.tv_sec = 0;
+	table->start_time.tv_usec = 0;
 	pthread_mutex_init(&table->write_m, NULL);
 	if (av[++i])
 		table->max_meal = ft_atoi(av[i]);

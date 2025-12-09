@@ -45,4 +45,3 @@ void	*lunch(void *p)
 	}
 	return (p);
 }
-

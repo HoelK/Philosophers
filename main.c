@@ -6,7 +6,7 @@
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 19:03:42 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/09 02:20:58 by hkeromne         ###   ########.fr       */
+/*   Updated: 2025/12/09 04:51:18 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,8 @@ int	main(int ac, char **av)
 
 	if (ac < 5 || ac > 6 || !check_args(av) || !init_table(&table, av))
 		return (EXIT_FAILURE);
-	//init(&table);
-	//ft_clean(&table);
-	gettimeofday(&table.start_time, NULL);
-	printf("%d\n", timestamp(table.start_time, MICROSECOND));
-	printf("%d\n", timestamp(table.start_time, MILLISECOND));
-	ft_sleep(table.start_time, timestamp(table.start_time, MICROSECOND), 200 * 1000);
-	printf("%d\n", timestamp(table.start_time, MILLISECOND));
-	printf("%d\n", timestamp(table.start_time, MICROSECOND));
-	ft_sleep(table.start_time, timestamp(table.start_time, MICROSECOND), 200 * 1000);
-	printf("%d\n", timestamp(table.start_time, MILLISECOND));
-	printf("%d\n", timestamp(table.start_time, MICROSECOND));
+	init(&table);
+	ft_clean(&table);
 	return (EXIT_SUCCESS);
+
 }
