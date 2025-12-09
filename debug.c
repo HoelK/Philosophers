@@ -1,39 +1,36 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   debug.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/26 01:52:03 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/06 18:19:13 by hkeromne         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "philo.h"
 
-#include "philosopher.h"
-
-void	print_status(t_philo *philo, const char *status)
+void	write_status(t_philo *philo, uint8_t status)
 {
-	fprintf(stderr, "%ld %d %s\n", get_time(philo->stats->start_time), philo->id, status);
+	pthread_mutex_lock(&philo->table->write_m);
+	printf("%u %d ", timestamp(philo->table->start_time, MILLISECOND), philo->id);
+	if (status == DIE)
+		printf("died\n");
+	else if (status == EAT)
+		printf("is eating\n");
+	else if (status == SLEEP)
+		printf("is sleeping\n");
+	else if (status == THINK)
+		printf("is thinking\n");
+	else if (status == FORK_L)
+		printf("has taken a left fork\n");
+	else if (status == FORK_R)
+		printf("has taken a right fork\n");
+	pthread_mutex_unlock(&philo->table->write_m);
 }
 
-void	print_philo(t_philo *philo)
+void	write_philo(t_philo *philo)
 {
-	printf("id : %d\n", philo->id);
-	printf("eat count : %lu\n", philo->stats->ms_eat);
-	printf("death count : %lu\n", philo->stats->ms_death);
-	printf("sleep count : %lu\n", philo->stats->ms_sleep);
+	printf("=====PHILO No[%d]=====\n", philo->id);
+	printf("meal count : %d\n", philo->meal_count);
 }
 
-void	print_stats(t_stats *stats)
+void	write_table(t_table *table)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	printf("number of philos : %d\n", stats->n_philo);
-	printf("time to eat : %lu\n", stats->ms_eat);
-	printf("time to sleep : %lu\n", stats->ms_sleep);
-	printf("time to die : %lu\n", stats->ms_death);
-	while (i < stats->n_philo)
-		print_philo(&stats->philos[i++]);
+	printf("number of philos : %d\ntime to die : %d\ntime to eat : %d\ntime to sleep: %d\nmax meal : %d\n", table->n_philo, table->ms_death, table->ms_eat, table->ms_sleep, table->max_meal);
+	while (i < table->n_philo)
+		write_philo(&table->philos[i++]);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hkeromne <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/27 21:05:29 by hkeromne          #+#    #+#             */
-/*   Updated: 2025/12/09 02:23:08 by hkeromne         ###   ########.fr       */
+/*   Created: 2025/12/08 21:22:42 by hkeromne          #+#    #+#             */
+/*   Updated: 2025/12/08 21:32:50 by hkeromne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,21 @@ static int	ft_isdigit(int c)
 	return (0);
 }
 
-int	ft_atoi(const char *nptr)
+static size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+static long	ft_atol(const char *nptr)
 {
 	size_t	i;
 	int		minus;
-	int		result;
+	long		result;
 
 	i = 0;
 	minus = 0;
@@ -48,22 +58,33 @@ int	ft_atoi(const char *nptr)
 	return (result);
 }
 
-uint32_t	timestamp(struct timeval start, uint8_t mode)
+static bool	ft_isnum(char *s)
 {
-	struct timeval now;
+	int	i;
 
-	gettimeofday(&now, NULL);
-	if (mode == MICROSECOND)
-		return (((now.tv_sec - start.tv_sec) * 1000000) + ((now.tv_usec - start.tv_usec)));
-	if (mode == MILLISECOND)
-		return (((now.tv_sec - start.tv_sec) * 1000) + ((now.tv_usec - start.tv_usec) / 1000));
-	if (mode == SECOND)
-		return (now.tv_sec - start.tv_sec);
-	return (0);
+	if (!s)
+		return (false);
+	i = 0;
+	if (s[i] == '+' || s[i] == '-')
+		return (false);
+	while (s[i])
+	{
+		if (!ft_isdigit(s[i]))
+			return (false);
+		i++;
+	}
+	return (true);
 }
 
-void ft_sleep(struct timeval start, uint32_t start_timestamp, uint32_t u_time) //15 microsec delay
+bool	check_args(char **av)
 {
-	while ((timestamp(start, MICROSECOND) - start_timestamp) < u_time);
-}
+	size_t	i;
 
+	i = 0;
+	while (av[++i])
+	{
+		if ((!ft_isnum(av[i])) || ft_strlen(av[i]) > 10 || (ft_atol(av[i]) < 0 || ft_atol(av[i]) > INT_MAX))
+			return (false);
+	}
+	return (true);
+}
